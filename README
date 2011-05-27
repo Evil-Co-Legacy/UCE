@@ -1,3 +1,6 @@
 The UCE (Or UNIX Console Emulator) jQuery Plugin helps you to create UNIX-Like terminals on your webpage.
 
+Requirements:
+	jquery hotkeys plugin (See jquery.hotkeys-0.7.9.js!)
+
 Tutorials coming soon ;-)
