@@ -57,6 +57,11 @@
 			cursorPosition				:		0,
 			
 			/**
+			 * Contains the current visibility state of cursor
+			 */
+			cursorBlinkState			:		false,
+			
+			/**
 			 * Contains the input buffer
 			 */
 			consoleInputBuffer			:		'',
@@ -230,8 +235,8 @@
 			rebuildInputLine			:		function() {
 				var consoleContent = terminal.consoleInputBuffer;
 				var firstConsoleContentPart = consoleContent.substr(0, terminal.cursorPosition);
-				var secondConsoleContentPart = (consoleContent.length > terminal.cursorPosition ? consoleContent.substr(terminal.cursorPosition) : '');
-				var consoleContent = firstConsoleContentPart + '<span id="' + terminal.settings.consoleCursorID + '" style="background-color: ' + terminal.settings.foregroundColor + '">&nbsp;&nbsp;&nbsp;</span>' + secondConsoleContentPart;
+				var secondConsoleContentPart = (consoleContent.length > terminal.cursorPosition ? consoleContent.substr(terminal.cursorPosition + 1) : '');
+				var consoleContent = firstConsoleContentPart + '<span id="' + terminal.settings.consoleCursorID + '" style="background-color: ' + terminal.settings.foregroundColor + '; color: ' + terminal.settings.backgroundColor + ';">' + (terminal.consoleInputBuffer.charAt(terminal.cursorPosition) != '' ? terminal.consoleInputBuffer.charAt(terminal.cursorPosition) : '&nbsp;')  + '</span>' + secondConsoleContentPart;
 				
 				terminal.consoleInputLine.html(consoleContent);
 				
@@ -352,7 +357,12 @@
 			 * Toggles the cursor
 			 */
 			cursorBlink					:		function() {
-				if (!terminal.isCursorBlinkDisabled() || terminal.consoleCursor.is(':hidden')) terminal.consoleCursor.toggle();
+				if (!terminal.isCursorBlinkDisabled() || !terminal.cursorBlinkState) {
+					terminal.consoleCursor.css('background-color', (!terminal.cursorBlinkState ? terminal.settings.foregroundColor : terminal.settings.backgroundColor));
+					terminal.consoleCursor.css('color', (terminal.cursorBlinkState ? terminal.settings.foregroundColor : terminal.settings.backgroundColor));
+					terminal.cursorBlinkState = !terminal.cursorBlinkState;
+				}
+				
 				setTimeout(terminal.cursorBlink, terminal.settings.cursorBlinkRate);
 			},
 			
