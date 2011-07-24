@@ -22,8 +22,12 @@
 				'PS1'								:	'<span style="color: #ff3333">Terminal</span>:~#&nbsp;',
 				'cursorBlinkRate'					:	500,
 				'generalErrorMessage'				:	'<span style="color: #ff3333"><b>An error occoured! Please try again later!</b></span><br />',
-				'cursorBlinkTimeout'				:	500
+				'cursorBlinkTimeout'				:	500,
+				'bellDuration'						:	300,
+				'bellColor'							:	'#FFFFFF'
 			},
+			
+			mainElement					:		null,
 	
 			/**
 			 * Contains the element where we'll store our command output
@@ -122,6 +126,9 @@
 				
 				// clear container
 				this.html('');
+				
+				// save container
+				terminal.mainElement = this;
 				
 				// update css
 				this.css('background-color',	terminal.settings.backgroundColor)
@@ -243,6 +250,9 @@
 				terminal.changeCursorPosition(terminal.cursorPosition - 1);
 			},
 			
+			/**
+			 * Sends the command
+			 */
 			sendCommand					:		function() {
 				// catch empty commands
 				if (terminal.consoleInputBuffer.match(/^(\s+)$/) || terminal.consoleInputBuffer == '') {
@@ -302,8 +312,24 @@
 			 */
 			changeCursorPosition		:		function(newPosition) {
 				terminal.lastCursorPositionChange = (new Date).getTime();
+				
+				if (terminal.cursorPosition == 0 && newPosition <= 0) {
+					terminal.bell();
+					return;
+				}
+				
 				terminal.cursorPosition = newPosition;
 				terminal.rebuildInputLine();
+			},
+			
+			/**
+			 * Emulates a UNIX like bell (Without sound)
+			 */
+			bell						:		function() {
+				terminal.mainElement.css('background-color', terminal.settings.bellColor);
+				setTimeout($.proxy(function() {
+					this.mainElement.css('background-color', this.settings.backgroundColor);
+				}, terminal), terminal.settings.bellDuration);
 			},
 			
 			/**
