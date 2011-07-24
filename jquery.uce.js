@@ -24,7 +24,8 @@
 				'generalErrorMessage'				:	'<span style="color: #ff3333"><b>An error occoured! Please try again later!</b></span><br />',
 				'cursorBlinkTimeout'				:	500,
 				'bellDuration'						:	300,
-				'bellColor'							:	'#FFFFFF'
+				'bellColor'							:	'#FFFFFF',
+				'motd'								:	''
 			},
 			
 			mainElement					:		null,
@@ -144,6 +145,9 @@
 				// get elements
 				terminal.consoleContent = $('#' + terminal.settings.consoleContentID);
 				terminal.consoleInputLine = $('#' + terminal.settings.consoleInputLineID);
+				
+				// print motd
+				terminal.consoleContent.append(terminal.settings.motd);
 				
 				// rebuild input line
 				terminal.rebuildInputLine.call(this);
