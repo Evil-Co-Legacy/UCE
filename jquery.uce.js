@@ -316,7 +316,7 @@
 			 * @returns {String}
 			 */
 			buildInputLogLine			:		function() {
-				return '<span class="terminalMessage">' + terminal.settings.PS1 + '<span class="terminalMessageContent">' + terminal.consoleInputBuffer + '<br /></span></span>';
+				return '<span class="terminalMessage"><span class="terminalMessagePS1">' + terminal.settings.PS1 + '</span><span class="terminalMessageContent">' + terminal.consoleInputBuffer + '<br /></span></span>';
 			},
 			
 			/**
@@ -348,6 +348,9 @@
 			 */
 			bell						:		function() {
 				terminal.mainElement.css('background-color', terminal.settings.bellColor);
+				terminal.consoleCursor.css('background-color', terminal.settings.backgroundColor)
+									  .css('color', terminal.settings.foregroundColor);
+				terminal.cursorBlinkState = false;
 				setTimeout($.proxy(function() {
 					this.mainElement.css('background-color', this.settings.backgroundColor);
 				}, terminal), terminal.settings.bellDuration);
