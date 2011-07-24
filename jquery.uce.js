@@ -25,7 +25,8 @@
 				'cursorBlinkTimeout'				:	500,
 				'bellDuration'						:	300,
 				'bellColor'							:	'#FFFFFF',
-				'motd'								:	''
+				'motd'								:	'',
+				'disableDefaultBindings'			:	false
 			},
 			
 			mainElement					:		null,
@@ -155,7 +156,8 @@
 				// start cursor blink
 				terminal.cursorBlink.call(this);
 				
-				terminal.initBinds.call(this);
+				// add binds
+				if (!terminal.settings.disableDefaultBindings) terminal.initBinds.call(this);
 			},
 			
 			/**
