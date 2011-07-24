@@ -201,6 +201,16 @@
 					$.proxy(function(e) {
 						e.preventDefault();
 					}, terminal)
+				).bind('keydown', 'left',
+					$.proxy(function(e) {
+						this.changeCursorPosition(this.cursorPosition - 1);
+						e.preventDefault();
+					}, terminal)
+				).bind('keydown', 'right',
+					$.proxy(function(e) {
+						this.changeCursorPosition(this.cursorPosition + 1);
+						e.preventDefault;
+					}, terminal)
 				).keyup(
 					$.proxy(function(e) {
 						var keyName = $.hotkeys.specialKeys[e.which];
@@ -319,7 +329,7 @@
 			changeCursorPosition		:		function(newPosition) {
 				terminal.lastCursorPositionChange = (new Date).getTime();
 				
-				if (terminal.cursorPosition == 0 && newPosition <= 0) {
+				if ((terminal.cursorPosition == 0 && newPosition <= 0) || newPosition >= (terminal.consoleInputBuffer.length + 1)) {
 					terminal.bell();
 					return;
 				}
