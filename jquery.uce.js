@@ -26,7 +26,9 @@
 				'bellDuration'						:	300,
 				'bellColor'							:	'#FFFFFF',
 				'motd'								:	'',
-				'disableDefaultBindings'			:	false
+				'disableDefaultBindings'			:	false,
+				'typeInSpeed'						:	50,
+				'disableTypeInSubmit'				:	false
 			},
 			
 			mainElement					:		null,
@@ -80,6 +82,16 @@
 			 * Contains the unix timestamp of last cursor position change
 			 */
 			lastCursorPositionChange	:		0,
+			
+			/**
+			 * Contains the interval handle for type ins
+			 */
+			typeInInterval				:		null,
+			
+			/**
+			 * Contains the current type in index
+			 */
+			typeInIndex					:		0,
 			
 			/**
 			 * Special key handling ...
@@ -311,6 +323,27 @@
 				});
 			},
 			
+			typeIn						:		function(text, callback) {
+				terminal.typeInInterval = window.setInterval($.proxy(function typeCharacter() {
+					if (this.typeInIndex < text.length) {
+						this.appendCharacter(text.charAt(this.typeInIndex));
+						this.typeInIndex++;
+					} else {
+						this.typeInIndex = 0;
+						clearInterval(this.typeInInterval);
+						
+						if (!this.settings.disableTypeInSubmit)
+							this.sendCommand();
+						else {
+							this.consoleContent.append(this.buildInputLogLine());
+							this.consoleInputBuffer = '';
+							this.cursorPosition = 0;
+							this.rebuildInputLine();
+						}
+					}
+				}, terminal), terminal.settings.typeInSpeed);
+			},
+			
 			/**
 			 * Builds the input line for logging in terminal content
 			 * @returns {String}
@@ -347,10 +380,15 @@
 			 * Emulates a UNIX like bell (Without sound)
 			 */
 			bell						:		function() {
+				// set background color
 				terminal.mainElement.css('background-color', terminal.settings.bellColor);
+				
+				// update cursor (for better look)
 				terminal.consoleCursor.css('background-color', terminal.settings.backgroundColor)
 									  .css('color', terminal.settings.foregroundColor);
 				terminal.cursorBlinkState = false;
+				
+				// reset all
 				setTimeout($.proxy(function() {
 					this.mainElement.css('background-color', this.settings.backgroundColor);
 				}, terminal), terminal.settings.bellDuration);
