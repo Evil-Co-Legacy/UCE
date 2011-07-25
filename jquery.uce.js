@@ -19,7 +19,6 @@
 				'consoleInputLineWrapperID'			:	'consoleInputLineWrapper',
 				'consoleCursorID'					:	'consoleCursor',
 				'ps1ContainerID'					:	'consolePS1',
-				'PS1'								:	'<span style="color: #ff3333">Terminal</span>:~#&nbsp;',
 				'cursorBlinkRate'					:	500,
 				'generalErrorMessage'				:	'<span style="color: #ff3333"><b>An error occoured! Please try again later!</b></span><br />',
 				'cursorBlinkTimeout'				:	500,
@@ -29,6 +28,13 @@
 				'disableDefaultBindings'			:	false,
 				'typeInSpeed'						:	50,
 				'disableTypeInSubmit'				:	false
+			},
+			
+			/**
+			 * Contains variables set by user or application
+			 */
+			variables					:		{
+				'PS1'								:	'<span style="color: #ff3333">Terminal</span>:~#&nbsp;'
 			},
 			
 			mainElement					:		null,
@@ -157,7 +163,7 @@
 				// create elements
 				this.html(	'<span id="' + terminal.settings.consoleContentID + '"></span> \
 							 <span id="' + terminal.settings.consoleInputLineWrapperID + '">\
-									<span id="' + terminal.settings.ps1ContainerID + '">' + terminal.settings.PS1 + '</span> \
+									<span id="' + terminal.settings.ps1ContainerID + '">' + terminal.variables.PS1 + '</span> \
 									<span id="' + terminal.settings.consoleInputLineID + '"></span>\
 							 </span>');
 				
@@ -318,7 +324,7 @@
 				$.ajax({
 					url			:		terminal.settings.callbackUrl,
 					type		:		'post',
-					data		:		terminal.settings.callbackParameter + '=' + escape(terminal.consoleInputBuffer),
+					data		:		terminal.settings.callbackParameter + '=' + escape(terminal.consoleInputBuffer) + '&' + $.param(terminal.variables),
 					beforeSend	:		$.proxy(function() {
 						this.consoleContent.append(this.buildInputLogLine());
 						this.consoleInputBuffer = '';
@@ -364,7 +370,7 @@
 			 * @returns {String}
 			 */
 			buildInputLogLine			:		function() {
-				return '<span class="terminalMessage"><span class="terminalMessagePS1">' + terminal.settings.PS1 + '</span><span class="terminalMessageContent">' + terminal.consoleInputBuffer + '<br /></span></span>';
+				return '<span class="terminalMessage"><span class="terminalMessagePS1">' + terminal.variables.PS1 + '</span><span class="terminalMessageContent">' + terminal.consoleInputBuffer + '<br /></span></span>';
 			},
 			
 			/**
@@ -430,6 +436,15 @@
 				if (terminal.lastCursorPositionChange + terminal.settings.cursorBlinkTimeout > (new Date()).getTime()) return true;
 				
 				return terminal.disableCursorBlink;
+			},
+			
+			/**
+			 * Sets the value of a variable
+			 * @param		String				variable
+			 * @param		String				value
+			 */
+			setVariable					:		function(variable, value) {
+				terminal.variables[variable] = value;
 			}
 	};
 	
