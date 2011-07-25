@@ -151,7 +151,8 @@
 				
 				// update css
 				this.css('background-color',	terminal.settings.backgroundColor)
-					.css('color',				terminal.settings.foregroundColor);
+					.css('color',				terminal.settings.foregroundColor)
+					.css('overflow',			'hidden');
 				
 				// create elements
 				this.html(	'<span id="' + terminal.settings.consoleContentID + '"></span> \
@@ -175,6 +176,9 @@
 				
 				// add binds
 				if (!terminal.settings.disableDefaultBindings) terminal.initBinds.call(this);
+				
+				// add events
+				terminal.initEvents.call(this);
 			},
 			
 			/**
@@ -239,6 +243,17 @@
 						}
 					}, terminal)
 				); 
+			},
+			
+			/**
+			 * Registers callback methods for all needed events
+			 */
+			initEvents					:		function() {
+				$(window).resize(
+					$.proxy(function(e) {
+						this.mainElement.scrollTop(this.mainElement.attr('scrollHeight'));
+					}, terminal)
+				);
 			},
 			
 			/**
