@@ -445,5 +445,5 @@
 			// fire init method
 			return terminal.init.apply(this, arguments);
 		}
-	}
+	};
 })( jQuery );
