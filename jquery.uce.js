@@ -368,7 +368,7 @@
 			},
 			
 			/**
-			 * Returnes true if the console is ready
+			 * Returns true if the console is ready
 			 * @returns		boolean
 			 */
 			isReady						:		function() {
@@ -423,7 +423,7 @@
 			},
 			
 			/**
-			 * Returnes true if the cursor should not blink
+			 * Returns true if the cursor should not blink
 			 * @returns		boolean
 			 */
 			isCursorBlinkDisabled		:		function() {
