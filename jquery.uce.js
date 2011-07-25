@@ -344,6 +344,11 @@
 				});
 			},
 			
+			/**
+			 * Types in a text
+			 * @param		String			text
+			 * @param		callback		callback
+			 */
 			typeIn						:		function(text, callback) {
 				terminal.typeInInterval = window.setInterval($.proxy(function typeCharacter() {
 					if (this.typeInIndex < text.length) {
@@ -360,6 +365,8 @@
 							this.consoleInputBuffer = '';
 							this.cursorPosition = 0;
 							this.rebuildInputLine();
+							
+							callback();
 						}
 					}
 				}, terminal), terminal.settings.typeInSpeed);
