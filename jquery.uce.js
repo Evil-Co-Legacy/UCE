@@ -282,6 +282,13 @@
 			},
 			
 			/**
+			 * Rebuilds PS1
+			 */
+			rebuildPS1					:		function() {
+				$('#' + terminal.settings.ps1ContainerID).html(terminal.variables.PS1);
+			},
+			
+			/**
 			 * Appends a new character to input
 			 * @param		string			character
 			 */
@@ -330,6 +337,7 @@
 					this.consoleInputBuffer = '';
 					this.cursorPosition = 0;
 					this.rebuildInputLine();
+					this.rebuildPS1();
 					return;
 				}
 				
