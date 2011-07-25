@@ -37,6 +37,11 @@
 				'PS1'								:	'<span style="color: #ff3333">Terminal</span>:~#&nbsp;'
 			},
 			
+			/**
+			 * Contains a regex that matches a variable declaration
+			 */
+			variableRegex				:		/^([A-Z0-9_\-\.]+)=(.*)$/i,
+			
 			mainElement					:		null,
 	
 			/**
@@ -313,6 +318,17 @@
 					this.consoleInputBuffer = '';
 					this.cursorPosition = 0;
 					this.consoleContent.append(this.buildInputLogLine());
+					this.rebuildInputLine();
+					return;
+				}
+				
+				// catch variable assignments
+				if (terminal.consoleInputBuffer.match(terminal.variableRegex)) {
+					var parts = terminal.consoleInputBuffer.split('=', 2);
+					terminal.variables[parts[0]] = parts[1];
+					this.consoleContent.append(this.buildInputLogLine());
+					this.consoleInputBuffer = '';
+					this.cursorPosition = 0;
 					this.rebuildInputLine();
 					return;
 				}
