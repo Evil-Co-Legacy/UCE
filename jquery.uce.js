@@ -274,7 +274,7 @@
 				var consoleContent = terminal.consoleInputBuffer;
 				var firstConsoleContentPart = consoleContent.substr(0, terminal.cursorPosition);
 				var secondConsoleContentPart = (consoleContent.length > terminal.cursorPosition ? consoleContent.substr(terminal.cursorPosition + 1) : '');
-				var consoleContent = firstConsoleContentPart + '<span id="' + terminal.settings.consoleCursorID + '" style="background-color: ' + terminal.settings.foregroundColor + '; color: ' + terminal.settings.backgroundColor + ';">' + (terminal.consoleInputBuffer.charAt(terminal.cursorPosition) != '' ? terminal.consoleInputBuffer.charAt(terminal.cursorPosition) : '&nbsp;')  + '</span>' + secondConsoleContentPart;
+				var consoleContent = terminal.htmlEntities(firstConsoleContentPart) + '<span id="' + terminal.settings.consoleCursorID + '" style="background-color: ' + terminal.settings.foregroundColor + '; color: ' + terminal.settings.backgroundColor + ';">' + (terminal.consoleInputBuffer.charAt(terminal.cursorPosition) != '' ? terminal.consoleInputBuffer.charAt(terminal.cursorPosition) : '&nbsp;')  + '</span>' + terminal.htmlEntities(secondConsoleContentPart);
 				
 				terminal.consoleInputLine.html(consoleContent);
 				
@@ -331,11 +331,13 @@
 				
 				// catch variable assignments
 				if (terminal.consoleInputBuffer.match(terminal.variableRegex)) {
-					var parts = terminal.consoleInputBuffer.split('=', 2);
-					terminal.variables[parts[0]] = parts[1];
 					this.consoleContent.append(this.buildInputLogLine());
 					this.consoleInputBuffer = '';
 					this.cursorPosition = 0;
+					
+					var parts = terminal.consoleInputBuffer.split('=', 2);
+					terminal.variables[parts[0]] = parts[1];
+					
 					this.rebuildInputLine();
 					this.rebuildPS1();
 					return;
@@ -401,7 +403,7 @@
 			 * @returns {String}
 			 */
 			buildInputLogLine			:		function() {
-				return '<span class="terminalMessage"><span class="terminalMessagePS1">' + terminal.variables.PS1 + '</span><span class="terminalMessageContent">' + terminal.consoleInputBuffer + '<br /></span></span>';
+				return '<span class="terminalMessage"><span class="terminalMessagePS1">' + terminal.variables.PS1 + '</span><span class="terminalMessageContent">' + terminal.htmlEntities(terminal.consoleInputBuffer) + '<br /></span></span>';
 			},
 			
 			/**
@@ -476,6 +478,15 @@
 			 */
 			setVariable					:		function(variable, value) {
 				terminal.variables[variable] = value;
+			},
+			
+			/**
+			 * Converts strings for use in console
+			 * @param		String			str
+			 * @returns		String
+			 */
+			htmlEntities				:		function(str) {
+				return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 			}
 	};
 	
