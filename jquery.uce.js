@@ -375,7 +375,7 @@
 			 * @param		String			text
 			 * @param		callback		callback
 			 */
-			typeIn						:		function(text, callback) {
+			typeIn						:		function(text, submit, callback) {
 				terminal.typeInInterval = window.setInterval($.proxy(function typeCharacter() {
 					if (this.typeInIndex < text.length) {
 						this.appendCharacter(text.charAt(this.typeInIndex));
@@ -384,16 +384,18 @@
 						this.typeInIndex = 0;
 						clearInterval(this.typeInInterval);
 						
-						if (!this.settings.disableTypeInSubmit)
-							this.sendCommand();
-						else {
-							this.consoleContent.append(this.buildInputLogLine());
-							this.consoleInputBuffer = '';
-							this.cursorPosition = 0;
-							this.rebuildInputLine();
-							
-							callback();
+						if (submit) {
+							if (!this.settings.disableTypeInSubmit)
+								this.sendCommand();
+							else {
+								this.consoleContent.append(this.buildInputLogLine());
+								this.consoleInputBuffer = '';
+								this.cursorPosition = 0;
+								this.rebuildInputLine();
+							}
 						}
+						
+						callback();
 					}
 				}, terminal), terminal.settings.typeInSpeed);
 			},
