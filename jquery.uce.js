@@ -322,21 +322,21 @@
 			sendCommand					:		function() {
 				// catch empty commands
 				if (terminal.consoleInputBuffer.match(/^(\s+)$/) || terminal.consoleInputBuffer == '') {
-					this.consoleInputBuffer = '';
-					this.cursorPosition = 0;
-					this.consoleContent.append(this.buildInputLogLine());
-					this.rebuildInputLine();
+					terminal.consoleInputBuffer = '';
+					terminal.cursorPosition = 0;
+					terminal.consoleContent.append(this.buildInputLogLine());
+					terminal.rebuildInputLine();
 					return;
 				}
 				
 				// catch variable assignments
 				if (terminal.consoleInputBuffer.match(terminal.variableRegex)) {
-					this.consoleContent.append(this.buildInputLogLine());
-					this.consoleInputBuffer = '';
-					this.cursorPosition = 0;
-					
 					var parts = terminal.consoleInputBuffer.split('=', 2);
 					terminal.variables[parts[0]] = parts[1];
+					
+					terminal.consoleContent.append(this.buildInputLogLine());
+					terminal.consoleInputBuffer = '';
+					terminal.cursorPosition = 0;
 					
 					this.rebuildInputLine();
 					this.rebuildPS1();
